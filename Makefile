@@ -36,9 +36,7 @@ megahal.o: .././megahal.mod/megahal.c .././megahal.mod/megahal.h \
  ../../../src/eggdrop.h ../../../src/compat/in6.h ../../../src/flags.h \
  ../../../src/cmdt.h ../../../src/tclegg.h ../../../src/tclhash.h \
  ../../../src/chan.h ../../../src/users.h ../../../src/compat/compat.h \
- ../../../src/compat/base64.h ../../../src/compat/inet_aton.h \
- ../../../src/compat/snprintf.h ../../../src/compat/gethostbyname2.h \
- ../../../src/compat/explicit_bzero.h ../../../src/compat/strlcpy.h \
+ ../../../src/compat/snprintf.h ../../../src/compat/strlcpy.h \
  .././megahal.mod/../modvals.h ../../../src/tandem.h \
  .././megahal.mod/../channels.mod/channels.h \
  .././megahal.mod/../irc.mod/irc.h \
