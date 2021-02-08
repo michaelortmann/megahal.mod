@@ -776,10 +776,10 @@ char *megahal_start(Function * global_funcs)
 	global = global_funcs;
 	strcpy(mega_file_name, "megahal.brn");
 	module_register(MODULE_NAME, megahal_table, 2, 7);
-	if (!module_depend(MODULE_NAME, "eggdrop", 108, 0)) {
-		module_undepend(MODULE_NAME);
-		return "This module requires Eggdrop 1.8.0 or later.";
-	}
+  if (!module_depend(MODULE_NAME, "eggdrop", 108, 4)) {
+    module_undepend(MODULE_NAME);
+    return "This module requires Eggdrop 1.8.4 or later.";
+  }
 	add_builtins(H_load, megahal_load);
 	add_builtins(H_dcc, mega_dcc);
 	server_megahal_setup(0);
