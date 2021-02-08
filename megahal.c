@@ -54,8 +54,6 @@
  */
 
 /*
- *		$Id: megahal.c,v 1.25 1999/10/21 03:42:48 hutch Exp hutch $
- *
  *		File:			megahal.c
  *
  *		Program:		MegaHAL v8r6
