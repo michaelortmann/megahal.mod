@@ -84,7 +84,7 @@
  *		Notes:		- This file is best viewed with tabstops set to three spaces.
  *						- To the Debian guys, yes, it's only one file, so shoot me!
  *						  I had to get it to work on DOS with crappy compilers and
- *						  I didn't want to spend more time than was neccessary.
+ *						  I didn't want to spend more time than was necessary.
  *						  Hence it's rather monolithic.  Also, an email would be
  *						  appreciated whenever bugs were fixed/discovered.  I've
  *						  terminated all of the memory leakage bugs AFAICT.  But
@@ -2127,7 +2127,7 @@ static void add_key(MODEL *model, DICTIONARY *keys, STRING word)
 /*
  *		Function:	Add_Aux
  *
- *		Purpose:		Add an auxilliary keyword to the keyword dictionary.
+ *		Purpose:		Add an auxiliary keyword to the keyword dictionary.
  */
 static void add_aux(MODEL *model, DICTIONARY *keys, STRING word)
 {
@@ -2427,7 +2427,7 @@ static int babble(MODEL *model, DICTIONARY *keys, DICTIONARY *words)
 	while(count>=0) {
 		/*
 		 *		If the symbol occurs as a keyword, then use it.  Only use an
-		 *		auxilliary keyword if a normal keyword has already been used.
+		 *		auxiliary keyword if a normal keyword has already been used.
 		 */
 		symbol=node->tree[i]->symbol;
 
@@ -2884,7 +2884,7 @@ static void free_word(STRING word)
  *		The almost finished version.
  *
  *		Revision 1.3  1997/12/10 09:08:09  hutch
- *		Now Loebner complient (tm).
+ *		Now Loebner compliant (tm).
  *
  *		Revision 1.2  1997/12/08 06:22:32  hutch
  *		Tidied up.
