@@ -39,11 +39,6 @@
  */
 
 /*
- *              Edited by pseudo 2012-10-12
- *                      <http://eggdrop.egg6.net>
- */
-
-/*
  *		Edited by BarkerJr 2005-04-16
  *			<http://barkerjr.net>
  */
@@ -773,7 +768,7 @@ char *megahal_start(Function * global_funcs)
 {
 	global = global_funcs;
 	strcpy(mega_file_name, "megahal.brn");
-	module_register(MODULE_NAME, megahal_table, 2, 7);
+	module_register(MODULE_NAME, megahal_table, 2, 8);
   if (!module_depend(MODULE_NAME, "eggdrop", 108, 4)) {
     module_undepend(MODULE_NAME);
     return "This module requires Eggdrop 1.8.4 or later.";

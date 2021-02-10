@@ -1,0 +1,4 @@
+2.8 2021-02-10
+- Now also works with eggdrop 1.8.4. (Michael Ortmann)
+2.7-pseudo 2012-10-12
+- Modified to run on eggdrop 1.8.x (pseudo)
