@@ -1638,7 +1638,6 @@ static void train(MODEL *model, char *filename)
 	FILE *file;
 	char buffer[1024];
 	DICTIONARY *words=NULL;
-	int length;
 
 	if(filename==NULL) return;
 
@@ -1649,7 +1648,7 @@ static void train(MODEL *model, char *filename)
 	}
 
 	fseek(file, 0, 2);
-   length=ftell(file);
+   ftell(file);
    rewind(file);
 
 	words=new_dictionary();
