@@ -845,7 +845,7 @@ static bool warn(char *title, char *fmt, ...)
  */
 static void capitalize(char *string)
 {
-	register int i;
+	int i;
 	bool start=TRUE;
 
 	for(i=0; i<(int)strlen(string); ++i) {
@@ -868,7 +868,7 @@ static void capitalize(char *string)
  */
 static void upper(char *string)
 {
-	register int i;
+	int i;
 
 	for(i=0; i<(int)strlen(string); ++i) string[i]=(char)toupper((int)string[i]);
 }
@@ -887,7 +887,7 @@ static void upper(char *string)
  */
 static BYTE2 add_word(DICTIONARY *dictionary, STRING word)
 {
-	register int i;
+	int i;
 	int position;
 	bool found;
 
@@ -1065,7 +1065,7 @@ static BYTE2 find_word(DICTIONARY *dictionary, STRING word)
  */
 static int wordcmp(STRING word1, STRING word2)
 {
-	register int i;
+	int i;
 	int bound;
 
 	bound=MEGA_MIN(word1.length,word2.length);
@@ -1127,7 +1127,7 @@ static void free_model(MODEL *model)
 static void free_tree(TREE *tree)
 {
 	static int level=0;
-	register int i;
+	int i;
 
 	if(tree==NULL) return;
 
@@ -1191,7 +1191,7 @@ static DICTIONARY *new_dictionary(void)
  */
 static void save_dictionary(FILE *file, DICTIONARY *dictionary)
 {
-	register int i;
+	int i;
 
 	fwrite(&(dictionary->size), sizeof(BYTE4), 1, file);
 	for(i=0; i<dictionary->size; ++i) {
@@ -1208,7 +1208,7 @@ static void save_dictionary(FILE *file, DICTIONARY *dictionary)
  */
 static void load_dictionary(FILE *file, DICTIONARY *dictionary)
 {
-	register int i;
+	int i;
 	int size;
 
 	fread(&size, sizeof(BYTE4), 1, file);
@@ -1226,7 +1226,7 @@ static void load_dictionary(FILE *file, DICTIONARY *dictionary)
  */
 static void save_word(FILE *file, STRING word)
 {
-	register int i;
+	int i;
 
 	fwrite(&(word.length), sizeof(BYTE1), 1, file);
 	for(i=0; i<word.length; ++i)
@@ -1242,7 +1242,7 @@ static void save_word(FILE *file, STRING word)
  */
 static void load_word(FILE *file, DICTIONARY *dictionary)
 {
-	register int i;
+	int i;
 	STRING word;
 
 	fread(&(word.length), sizeof(BYTE1), 1, file);
@@ -1338,7 +1338,7 @@ fail:
  */
 static void update_model(MODEL *model, int symbol)
 {
-	register int i;
+	int i;
 
 	/*
 	 *		Update all of the models in the current context with the specified
@@ -1360,7 +1360,7 @@ static void update_model(MODEL *model, int symbol)
  */
 static void update_context(MODEL *model, int symbol)
 {
-	register int i;
+	int i;
 
 	for(i=(model->order+1); i>0; --i)
 		if(model->halcontext[i-1]!=NULL)
@@ -1406,7 +1406,7 @@ static TREE *add_symbol(TREE *tree, BYTE2 symbol)
  */
 static TREE *find_symbol(TREE *node, int symbol)
 {
-	register int i;
+	int i;
 	TREE *found=NULL;
 	bool found_symbol=FALSE;
 
@@ -1431,7 +1431,7 @@ static TREE *find_symbol(TREE *node, int symbol)
  */
 static TREE *find_symbol_add(TREE *node, int symbol)
 {
-	register int i;
+	int i;
 	TREE *found=NULL;
 	bool found_symbol=FALSE;
 
@@ -1461,7 +1461,7 @@ static TREE *find_symbol_add(TREE *node, int symbol)
  */
 static void add_node(TREE *tree, TREE *node, int position)
 {
-	register int i;
+	int i;
 
 	/*
 	 *		Allocate room for one more child node, which may mean allocating
@@ -1505,7 +1505,7 @@ static void add_node(TREE *tree, TREE *node, int position)
  */
 static int search_node(TREE *node, int symbol, bool *found_symbol)
 {
-	register int position;
+	int position;
 	int min;
 	int max;
 	int middle;
@@ -1563,7 +1563,7 @@ notfound:
  */
 static void initialize_context(MODEL *model)
 {
-	register int i;
+	int i;
 
 	for(i=0; i<=model->order; ++i) model->halcontext[i]=NULL;
 }
@@ -1577,7 +1577,7 @@ static void initialize_context(MODEL *model)
  */
 static void learn(MODEL *model, DICTIONARY *words)
 {
-	register int i;
+	int i;
 	BYTE2 symbol;
 
 	/*
@@ -1680,8 +1680,8 @@ static void train(MODEL *model, char *filename)
  */
 static void show_dictionary(DICTIONARY *dictionary)
 {
-	register int i;
-	register int j;
+	int i;
+	int j;
 	FILE *file;
 
 	file=fopen("megahal.dic", "w");
@@ -1749,7 +1749,7 @@ static void save_model(char *modelname, MODEL *model)
 static void save_tree(FILE *file, TREE *node)
 {
 	static int level=0;
-	register int i;
+	int i;
 
 	fwrite(&(node->symbol), sizeof(BYTE2), 1, file);
 	fwrite(&(node->usage), sizeof(BYTE4), 1, file);
@@ -1773,7 +1773,7 @@ static void save_tree(FILE *file, TREE *node)
 static void load_tree(FILE *file, TREE *node)
 {
 	static int level=0;
-	register int i;
+	int i;
 
 	fread(&(node->symbol), sizeof(BYTE2), 1, file);
 	fread(&(node->usage), sizeof(BYTE4), 1, file);
@@ -2036,7 +2036,7 @@ static char *generate_reply(MODEL *model, DICTIONARY *words)
  */
 static bool dissimilar(DICTIONARY *words1, DICTIONARY *words2)
 {
-	register int i;
+	int i;
 
 	if(words1->size!=words2->size) return(TRUE);
 	for(i=0; i<words1->size; ++i)
@@ -2056,8 +2056,8 @@ static bool dissimilar(DICTIONARY *words1, DICTIONARY *words2)
 static DICTIONARY *make_keywords(MODEL *model, DICTIONARY *words)
 {
 	static DICTIONARY *keys=NULL;
-	register int i;
-	register int j;
+	int i;
+	int j;
 	int c;
 
 	if(keys==NULL) keys=new_dictionary();
@@ -2147,7 +2147,7 @@ static void add_aux(MODEL *model, DICTIONARY *keys, STRING word)
 static DICTIONARY *reply(MODEL *model, DICTIONARY *keys)
 {
 	static DICTIONARY *replies=NULL;
-	register int i;
+	int i;
 	int symbol;
 	bool start=TRUE;
 
@@ -2266,8 +2266,8 @@ static DICTIONARY *reply(MODEL *model, DICTIONARY *keys)
  */
 static float evaluate_reply(MODEL *model, DICTIONARY *keys, DICTIONARY *words)
 {
-	register int i;
-	register int j;
+	int i;
+	int j;
 	int symbol;
 	float probability;
 	int count;
@@ -2340,8 +2340,8 @@ static float evaluate_reply(MODEL *model, DICTIONARY *keys, DICTIONARY *words)
 static char *make_output(DICTIONARY *words)
 {
 	static char *output=NULL;
-	register int i;
-	register int j;
+	int i;
+	int j;
 	int length;
 	static char *output_none=NULL;
 	
@@ -2398,7 +2398,7 @@ static int babble(MODEL *model, DICTIONARY *keys, DICTIONARY *words)
 	/* Changed by BarkerJr to prevent compile warnings */
 	/* TREE *node; */
 	TREE *node=NULL;
-	register int i;
+	int i;
 	int count;
 	/* Changed by BarkerJr to prevent compile warnings */
 	/* int symbol; */
@@ -2450,7 +2450,7 @@ static int babble(MODEL *model, DICTIONARY *keys, DICTIONARY *words)
  */
 static bool word_exists(DICTIONARY *dictionary, STRING word)
 {
-	register int i;
+	int i;
 
 	for(i=0; i<dictionary->size; ++i)
 		if(wordcmp(dictionary->entry[i], word)==0)
@@ -2468,7 +2468,7 @@ static bool word_exists(DICTIONARY *dictionary, STRING word)
  */
 static int seed(MODEL *model, DICTIONARY *keys)
 {
-	register int i;
+	int i;
 	int symbol;
 	int stop;
 
@@ -2606,7 +2606,7 @@ static SWAP *initialize_swap(char *filename)
 
 static void free_swap(SWAP *swap)
 {
-	register int i;
+	int i;
 
 	if(swap==NULL) return;
 
@@ -2783,7 +2783,7 @@ static void change_personality(DICTIONARY *command, int position, MODEL **model)
 
 static void free_words(DICTIONARY *words)
 {
-	register int i;
+	int i;
 
 	if(words==NULL) return;
 
