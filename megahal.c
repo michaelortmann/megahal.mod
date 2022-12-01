@@ -1872,7 +1872,7 @@ static void make_words(char *input, DICTIONARY *words)
 			if(words->entry==NULL)
 				words->entry=(STRING *)nmalloc((words->size+1)*sizeof(STRING));
 			else
-				words->entry=(STRING *)realloc(words->entry, (words->size+1)*sizeof(STRING));
+				words->entry=(STRING *)nrealloc(words->entry, (words->size+1)*sizeof(STRING));
 
 			if(words->entry==NULL) {
 				error("make_words", "Unable to reallocate dictionary");
