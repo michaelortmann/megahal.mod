@@ -1,3 +1,5 @@
+2.9 2022-12-01
+- Fix putlog (Michael Ortmann)
 2.8 2021-02-10
 - Now also works with eggdrop 1.8.4. (Michael Ortmann)
 2.7-pseudo 2012-10-12

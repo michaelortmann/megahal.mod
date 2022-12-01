@@ -363,7 +363,7 @@ static void do_megahal(int idx, char *prefix, char *text, char *channel)
 			while (q->next) q = q->next;
 			if ((q->next = (QUEUE *)nmalloc(sizeof(QUEUE))) == NULL)
 			{
-				putlog("MegaHAL: Could not allocate memory to reply.");
+				putlog(LOG_MISC, "*", "MegaHAL: Could not allocate memory to reply.");
 				return;
 			}
 			q = q->next;
@@ -372,7 +372,7 @@ static void do_megahal(int idx, char *prefix, char *text, char *channel)
 		{
 			if ((theq = (QUEUE *)nmalloc(sizeof(QUEUE))) == NULL)
 			{
-				putlog("MegaHAL: Could not allocate memory to reply.");
+				putlog(LOG_MISC, "*", "MegaHAL: Could not allocate memory to reply.");
 				return;
 			}
 			q = theq;
@@ -383,7 +383,7 @@ static void do_megahal(int idx, char *prefix, char *text, char *channel)
 		q->next = NULL;
 		if ((q->text = (char *)nmalloc(strlen(prefix)+strlen(halreply)+1)) == NULL)
 		{
-			putlog("MegaHAL: Could not allocate memory to reply.");
+			putlog(LOG_MISC, "*", "MegaHAL: Could not allocate memory to reply.");
 			return;
 		}
 		mem += strlen(prefix) + strlen(halreply) + 1;
@@ -768,7 +768,7 @@ char *megahal_start(Function * global_funcs)
 {
 	global = global_funcs;
 	strcpy(mega_file_name, "megahal.brn");
-	module_register(MODULE_NAME, megahal_table, 2, 8);
+	module_register(MODULE_NAME, megahal_table, 2, 9);
   if (!module_depend(MODULE_NAME, "eggdrop", 108, 4)) {
     module_undepend(MODULE_NAME);
     return "This module requires Eggdrop 1.8.4 or later.";
