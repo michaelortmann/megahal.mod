@@ -1,7 +1,8 @@
 2.9 2022-12-01
+- Rewrote upper() (Michael Ortmann)
 - Remove register keyword (Michael Ortmann)
-- Fix realloc (Michael Ortmann)
-- Fix putlog (Michael Ortmann)
+- Fix realloc() (Michael Ortmann)
+- Fix putlog() (Michael Ortmann)
 2.8 2021-02-10
 - Now also works with eggdrop 1.8.4. (Michael Ortmann)
 2.7-pseudo 2012-10-12

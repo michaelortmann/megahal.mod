@@ -868,9 +868,12 @@ static void capitalize(char *string)
  */
 static void upper(char *string)
 {
-	int i;
+  char *c = string;
 
-	for(i=0; i<(int)strlen(string); ++i) string[i]=(char)toupper((int)string[i]);
+  while (*c) {
+    *c = toupper(*c);
+    c++;
+  }
 }
  
 /*---------------------------------------------------------------------------*/
