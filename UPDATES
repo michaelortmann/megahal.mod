@@ -1,3 +1,8 @@
+2.10 2023-03-16
+- realloc() -> nrealloc()
+- Cleanup alloc()
+- egg_strncasecmp -> strncasecmp()
+- Removed dead and dangerous (hardcoded SEEK_END value) code (Michael Ortmann)
 2.9 2022-12-01
 - Rewrote upper() (Michael Ortmann)
 - Remove register keyword (Michael Ortmann)

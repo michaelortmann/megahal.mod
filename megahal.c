@@ -381,7 +381,7 @@ static void do_megahal(int idx, char *prefix, char *text, char *channel)
 
 		q->idx = idx;
 		q->next = NULL;
-		if ((q->text = (char *)nmalloc(strlen(prefix)+strlen(halreply)+1)) == NULL)
+		if ((q->text = nmalloc(strlen(prefix)+strlen(halreply)+1)) == NULL)
 		{
 			putlog(LOG_MISC, "*", "MegaHAL: Could not allocate memory to reply.");
 			return;
@@ -396,7 +396,7 @@ static int pubm_megahal(const char *nick, const char *host, const char *hand,
 {
   /* reply if the name is  the first word in a phrase */
   if (ngetudef("megahal", channel) && (strlen(text) > strlen(botname)) &&
-      !egg_strncasecmp(botname, text, strlen(botname)))
+      !strncasecmp(botname, text, strlen(botname)))
   {
     struct chanset_t *chan = findchan_by_dname(channel);
     /* channel length + nick length plus 13 characters */
@@ -440,7 +440,7 @@ static int pubm_megahal(const char *nick, const char *host, const char *hand,
 
     for (; m && m->nick[0]; m = m->next)
       if ((strlen(text) > strlen(m->nick)) &&
-        !egg_strncasecmp(m->nick, text, strlen(m->nick)))
+        !strncasecmp(m->nick, text, strlen(m->nick)))
       {
         p = &text[strlen(m->nick)+1];
         if (*p == ' ') p++;
@@ -512,7 +512,7 @@ static int msgm_megahal(const char *nick, const char *host,
 	/* nick length plus 13 characters for this prefix */
 	char prefix[strlen(nick) + 12];
 
-	if (!egg_strncasecmp(botname, text, strlen(botname)))
+	if (!strncasecmp(botname, text, strlen(botname)))
 	{
 		sprintf(prefix, "PRIVMSG %s : ", nick);
 		do_megahal(DP_HELP, prefix, &text[strlen(botname)+1], (char *)NULL);
@@ -768,7 +768,7 @@ char *megahal_start(Function * global_funcs)
 {
 	global = global_funcs;
 	strcpy(mega_file_name, "megahal.brn");
-	module_register(MODULE_NAME, megahal_table, 2, 9);
+	module_register(MODULE_NAME, megahal_table, 2, 10);
   if (!module_depend(MODULE_NAME, "eggdrop", 108, 4)) {
     module_undepend(MODULE_NAME);
     return "This module requires Eggdrop 1.8.4 or later.";
@@ -912,7 +912,7 @@ static BYTE2 add_word(DICTIONARY *dictionary, STRING word)
 		dictionary->index=(BYTE2 *)nmalloc(sizeof(BYTE2)*
 		(dictionary->size));
 	} else {
-		dictionary->index=(BYTE2 *)realloc((BYTE2 *)
+		dictionary->index=(BYTE2 *)nrealloc((BYTE2 *)
 		(dictionary->index),sizeof(BYTE2)*(dictionary->size));
 	}
 	if(dictionary->index==NULL) {
@@ -926,7 +926,7 @@ static BYTE2 add_word(DICTIONARY *dictionary, STRING word)
 	if(dictionary->entry==NULL) {
 		dictionary->entry=(STRING *)nmalloc(sizeof(STRING)*(dictionary->size));
 	} else {
-		dictionary->entry=(STRING *)realloc((STRING *)(dictionary->entry),
+		dictionary->entry=(STRING *)nrealloc((STRING *)(dictionary->entry),
 		sizeof(STRING)*(dictionary->size));
 	}
 	if(dictionary->entry==NULL) {
@@ -938,7 +938,7 @@ static BYTE2 add_word(DICTIONARY *dictionary, STRING word)
 	 *		Copy the new word into the word array
 	 */
 	dictionary->entry[dictionary->size-1].length=word.length;
-	dictionary->entry[dictionary->size-1].word=(char *)nmalloc(sizeof(char)*
+	dictionary->entry[dictionary->size-1].word=nmalloc(sizeof(char)*
 	(word.length));
 	if(dictionary->entry[dictionary->size-1].word==NULL) {
 		error("add_word", "Unable to allocate the word.");
@@ -1249,7 +1249,7 @@ static void load_word(FILE *file, DICTIONARY *dictionary)
 	STRING word;
 
 	fread(&(word.length), sizeof(BYTE1), 1, file);
-	word.word=(char *)nmalloc(sizeof(char)*word.length);
+	word.word=nmalloc(sizeof(char)*word.length);
 	if(word.word==NULL) {
 		error("load_word", "Unable to allocate word");
 		return;
@@ -1473,7 +1473,7 @@ static void add_node(TREE *tree, TREE *node, int position)
 	if(tree->tree==NULL) {
 		tree->tree=(TREE **)nmalloc(sizeof(TREE *)*(tree->branch+1));
 	} else {
-		tree->tree=(TREE **)realloc((TREE **)(tree->tree),sizeof(TREE *)*
+		tree->tree=(TREE **)nrealloc((TREE **)(tree->tree),sizeof(TREE *)*
 		(tree->branch+1));
 	}
 	if(tree->tree==NULL) {
@@ -1650,10 +1650,6 @@ static void train(MODEL *model, char *filename)
 		return;
 	}
 
-	fseek(file, 0, 2);
-   ftell(file);
-   rewind(file);
-
 	words=new_dictionary();
 
 	while(!feof(file)) {
@@ -1714,12 +1710,12 @@ static void save_model(char *modelname, MODEL *model)
 	FILE *file;
 	static char *filename=NULL;
 	
-	if(filename==NULL) filename=(char *)nmalloc(sizeof(char)*1);
+	if(filename==NULL) filename=nmalloc(sizeof(char)*1);
 
 	/*
 	 *    Allocate memory for the filename
 	 */
-	filename=(char *)realloc(filename,
+	filename=nrealloc(filename,
 		sizeof(char)*(strlen(directory)+strlen(SEP)+12));
 	if(filename==NULL) error("save_model","Unable to allocate filename");
 
@@ -1902,7 +1898,7 @@ static void make_words(char *input, DICTIONARY *words)
 		if(words->entry==NULL)
 			words->entry=(STRING *)nmalloc((words->size+1)*sizeof(STRING));
 		else
-			words->entry=(STRING *)realloc(words->entry, (words->size+1)*sizeof(STRING));
+			words->entry=(STRING *)nrealloc(words->entry, (words->size+1)*sizeof(STRING));
 		if(words->entry==NULL) {
 			error("make_words", "Unable to reallocate dictionary");
 			return;
@@ -2182,7 +2178,7 @@ static DICTIONARY *reply(MODEL *model, DICTIONARY *keys)
 		if(replies->entry==NULL)
 			replies->entry=(STRING *)nmalloc((replies->size+1)*sizeof(STRING));
 		else
-			replies->entry=(STRING *)realloc(replies->entry, (replies->size+1)*sizeof(STRING));
+			replies->entry=(STRING *)nrealloc(replies->entry, (replies->size+1)*sizeof(STRING));
 		if(replies->entry==NULL) {
 			error("reply", "Unable to reallocate dictionary");
 			return(NULL);
@@ -2232,7 +2228,7 @@ static DICTIONARY *reply(MODEL *model, DICTIONARY *keys)
 		if(replies->entry==NULL)
 			replies->entry=(STRING *)nmalloc((replies->size+1)*sizeof(STRING));
 		else
-			replies->entry=(STRING *)realloc(replies->entry, (replies->size+1)*sizeof(STRING));
+			replies->entry=(STRING *)nrealloc(replies->entry, (replies->size+1)*sizeof(STRING));
 		if(replies->entry==NULL) {
 			error("reply", "Unable to reallocate dictionary");
 			return(NULL);
@@ -2351,7 +2347,7 @@ static char *make_output(DICTIONARY *words)
 	if(output_none==NULL) output_none=nmalloc(40);
 
 	if(output==NULL) {
-		output=(char *)nmalloc(sizeof(char));
+		output=nmalloc(sizeof(char));
 		if(output==NULL) {
 			error("make_output", "Unable to allocate output");
 			return(output_none);
@@ -2367,7 +2363,7 @@ static char *make_output(DICTIONARY *words)
 	length=1;
 	for(i=0; i<words->size; ++i) length+=words->entry[i].length;
 
-	output=(char *)realloc(output, sizeof(char)*length);
+	output=nrealloc(output, sizeof(char)*length);
 	if(output==NULL) {
 		error("make_output", "Unable to reallocate output.");
 		if(output_none!=NULL)
@@ -2551,13 +2547,13 @@ static void add_swap(SWAP *list, char *s, char *d)
 		}
 	}
 
-	list->from=(STRING *)realloc(list->from, sizeof(STRING)*(list->size));
+	list->from=(STRING *)nrealloc(list->from, sizeof(STRING)*(list->size));
 	if(list->from==NULL) {
 		error("add_swap", "Unable to reallocate from");
 		return;
 	}
 
-	list->to=(STRING *)realloc(list->to, sizeof(STRING)*(list->size));
+	list->to=(STRING *)nrealloc(list->to, sizeof(STRING)*(list->size));
 	if(list->to==NULL) {
 		error("add_swap", "Unable to reallocate to");
 		return;
@@ -2686,12 +2682,12 @@ static void load_personality(MODEL **model)
 	FILE *file;
 	static char *filename=NULL;
 
-	if(filename==NULL) filename=(char *)nmalloc(sizeof(char)*1);
+	if(filename==NULL) filename=nmalloc(sizeof(char)*1);
 
 	/*
 	 *		Allocate memory for the filename
 	 */
-	filename=(char *)realloc(filename,
+	filename=nrealloc(filename,
 		sizeof(char)*(strlen(directory)+strlen(SEP)+12));
 	if(filename==NULL) error("load_personality","Unable to allocate filename");
 
@@ -2760,17 +2756,17 @@ static void change_personality(DICTIONARY *command, int position, MODEL **model)
 {
 	if(last!=NULL) { nfree(last); last=NULL; }
 	if(directory!=NULL) last=mystrdup(directory);
-	else directory=(char *)nmalloc(sizeof(char)*1);
+	else directory=nmalloc(sizeof(char)*1);
 	if(directory==NULL)
 		error("change_personality", "Unable to allocate directory");
 	if((command==NULL)||((position+2)>=command->size)) {
-		directory=(char *)realloc(directory, sizeof(char)*(strlen(DEFAULT)+1));
+		directory=nrealloc(directory, sizeof(char)*(strlen(DEFAULT)+1));
 		if(directory==NULL)
 			error("change_personality", "Unable to allocate directory");
 		strcpy(directory, DEFAULT);
 		if(last==NULL) last=mystrdup(directory);
 	} else {
-		directory=(char *)realloc(directory,
+		directory=nrealloc(directory,
 			sizeof(char)*(command->entry[position+2].length+1));
 		if(directory==NULL)
 			error("change_personality", "Unable to allocate directory");
