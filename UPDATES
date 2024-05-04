@@ -1,3 +1,9 @@
+2.11 2024-05-04
+- Removed unused include
+- BYTE1 -> uint8_t
+- BYTE2 -> uint16_t
+- BYTE4 -> uint32_t
+- Remove unused but set variables
 2.10 2023-03-16
 - realloc() -> nrealloc()
 - Cleanup alloc()

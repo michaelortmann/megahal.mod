@@ -154,7 +154,6 @@
 #include <sys/malloc.h>
 #endif
 #include <string.h>
-#include <signal.h>
 #include <math.h>
 #include <time.h>
 #include <ctype.h> 
@@ -172,7 +171,7 @@
 static void add_aux(MODEL *, DICTIONARY *, STRING);
 static void add_key(MODEL *, DICTIONARY *, STRING);
 static void add_node(TREE *, TREE *, int);
-static TREE *add_symbol(TREE *, BYTE2);
+static TREE *add_symbol(TREE *, uint16_t);
 static int babble(MODEL *, DICTIONARY *, DICTIONARY *);
 static bool boundary(char *, int);
 static void capitalize(char *);
@@ -768,7 +767,7 @@ char *megahal_start(Function * global_funcs)
 {
 	global = global_funcs;
 	strcpy(mega_file_name, "megahal.brn");
-	module_register(MODULE_NAME, megahal_table, 2, 10);
+	module_register(MODULE_NAME, megahal_table, 2, 11);
   if (!module_depend(MODULE_NAME, "eggdrop", 108, 4)) {
     module_undepend(MODULE_NAME);
     return "This module requires Eggdrop 1.8.4 or later.";
@@ -888,7 +887,7 @@ static void upper(char *string)
  *						the dictionary, then return its current identifier
  *						without adding it again.
  */
-static BYTE2 add_word(DICTIONARY *dictionary, STRING word)
+static uint16_t add_word(DICTIONARY *dictionary, STRING word)
 {
 	int i;
 	int position;
@@ -909,11 +908,11 @@ static BYTE2 add_word(DICTIONARY *dictionary, STRING word)
 	 *		Allocate one more entry for the word index
 	 */
 	if(dictionary->index==NULL) {
-		dictionary->index=(BYTE2 *)nmalloc(sizeof(BYTE2)*
+		dictionary->index=(uint16_t *)nmalloc(sizeof(uint16_t)*
 		(dictionary->size));
 	} else {
-		dictionary->index=(BYTE2 *)nrealloc((BYTE2 *)
-		(dictionary->index),sizeof(BYTE2)*(dictionary->size));
+		dictionary->index=(uint16_t *)nrealloc((uint16_t *)
+		(dictionary->index),sizeof(uint16_t)*(dictionary->size));
 	}
 	if(dictionary->index==NULL) {
 		error("add_word", "Unable to reallocate the index.");
@@ -1046,7 +1045,7 @@ notfound:
  *						We assume that the word with index zero is equal to a
  *						NULL word, indicating an error condition.
  */
-static BYTE2 find_word(DICTIONARY *dictionary, STRING word)
+static uint16_t find_word(DICTIONARY *dictionary, STRING word)
 {
 	int position;
 	bool found;
@@ -1129,16 +1128,13 @@ static void free_model(MODEL *model)
 
 static void free_tree(TREE *tree)
 {
-	static int level=0;
 	int i;
 
 	if(tree==NULL) return;
 
 	if(tree->tree!=NULL) {
 		for(i=0; i<tree->branch; ++i) {
-			++level;
 			free_tree(tree->tree[i]);
-			--level;
 		}
 		nfree(tree->tree);
 	}
@@ -1196,7 +1192,7 @@ static void save_dictionary(FILE *file, DICTIONARY *dictionary)
 {
 	int i;
 
-	fwrite(&(dictionary->size), sizeof(BYTE4), 1, file);
+	fwrite(&(dictionary->size), sizeof(uint32_t), 1, file);
 	for(i=0; i<dictionary->size; ++i) {
 		save_word(file, dictionary->entry[i]);
 	}
@@ -1214,7 +1210,7 @@ static void load_dictionary(FILE *file, DICTIONARY *dictionary)
 	int i;
 	int size;
 
-	fread(&size, sizeof(BYTE4), 1, file);
+	fread(&size, sizeof(uint32_t), 1, file);
 	for(i=0; i<size; ++i) {
 		load_word(file, dictionary);
 	}
@@ -1231,7 +1227,7 @@ static void save_word(FILE *file, STRING word)
 {
 	int i;
 
-	fwrite(&(word.length), sizeof(BYTE1), 1, file);
+	fwrite(&(word.length), sizeof(uint8_t), 1, file);
 	for(i=0; i<word.length; ++i)
 		fwrite(&(word.word[i]), sizeof(char), 1, file);
 }
@@ -1248,7 +1244,7 @@ static void load_word(FILE *file, DICTIONARY *dictionary)
 	int i;
 	STRING word;
 
-	fread(&(word.length), sizeof(BYTE1), 1, file);
+	fread(&(word.length), sizeof(uint8_t), 1, file);
 	word.word=nmalloc(sizeof(char)*word.length);
 	if(word.word==NULL) {
 		error("load_word", "Unable to allocate word");
@@ -1349,7 +1345,7 @@ static void update_model(MODEL *model, int symbol)
 	 */
 	for(i=(model->order+1); i>0; --i)
 		if(model->halcontext[i-1]!=NULL)
-			model->halcontext[i]=add_symbol(model->halcontext[i-1], (BYTE2)symbol);
+			model->halcontext[i]=add_symbol(model->halcontext[i-1], (uint16_t)symbol);
 
 	return;
 }
@@ -1379,7 +1375,7 @@ static void update_context(MODEL *model, int symbol)
  *						specified symbol, which may mean growing the tree if the
  *						symbol hasn't been seen in this context before.
  */
-static TREE *add_symbol(TREE *tree, BYTE2 symbol)
+static TREE *add_symbol(TREE *tree, uint16_t symbol)
 {
 	TREE *node=NULL;
 
@@ -1581,7 +1577,7 @@ static void initialize_context(MODEL *model)
 static void learn(MODEL *model, DICTIONARY *words)
 {
 	int i;
-	BYTE2 symbol;
+	uint16_t symbol;
 
 	/*
 	 *		We only learn from inputs which are long enough
@@ -1730,7 +1726,7 @@ static void save_model(char *modelname, MODEL *model)
 	}
 
 	fwrite(COOKIE, sizeof(char), strlen(COOKIE), file);
-	fwrite(&(model->order), sizeof(BYTE1), 1, file);
+	fwrite(&(model->order), sizeof(uint8_t), 1, file);
 	save_tree(file, model->forward);
 	save_tree(file, model->backward);
 	save_dictionary(file, model->dictionary);
@@ -1747,18 +1743,15 @@ static void save_model(char *modelname, MODEL *model)
  */
 static void save_tree(FILE *file, TREE *node)
 {
-	static int level=0;
 	int i;
 
-	fwrite(&(node->symbol), sizeof(BYTE2), 1, file);
-	fwrite(&(node->usage), sizeof(BYTE4), 1, file);
-	fwrite(&(node->count), sizeof(BYTE2), 1, file);
-	fwrite(&(node->branch), sizeof(BYTE2), 1, file);
+	fwrite(&(node->symbol), sizeof(uint16_t), 1, file);
+	fwrite(&(node->usage), sizeof(uint32_t), 1, file);
+	fwrite(&(node->count), sizeof(uint16_t), 1, file);
+	fwrite(&(node->branch), sizeof(uint16_t), 1, file);
 
 	for(i=0; i<node->branch; ++i) {
-		++level;
 		save_tree(file, node->tree[i]);
-		--level;
 	}
 }
 
@@ -1771,13 +1764,12 @@ static void save_tree(FILE *file, TREE *node)
  */
 static void load_tree(FILE *file, TREE *node)
 {
-	static int level=0;
 	int i;
 
-	fread(&(node->symbol), sizeof(BYTE2), 1, file);
-	fread(&(node->usage), sizeof(BYTE4), 1, file);
-	fread(&(node->count), sizeof(BYTE2), 1, file);
-	fread(&(node->branch), sizeof(BYTE2), 1, file);
+	fread(&(node->symbol), sizeof(uint16_t), 1, file);
+	fread(&(node->usage), sizeof(uint32_t), 1, file);
+	fread(&(node->count), sizeof(uint16_t), 1, file);
+	fread(&(node->branch), sizeof(uint16_t), 1, file);
 
 	if(node->branch==0) return;
 
@@ -1789,9 +1781,7 @@ static void load_tree(FILE *file, TREE *node)
 
 	for(i=0; i<node->branch; ++i) {
 		node->tree[i]=new_node();
-		++level;
 		load_tree(file, node->tree[i]);
-		--level;
 	}
 }
 
@@ -1821,7 +1811,7 @@ static bool load_model(char *filename, MODEL *model)
 		goto fail;
 	}
 
-	fread(&(model->order), sizeof(BYTE1), 1, file);
+	fread(&(model->order), sizeof(uint8_t), 1, file);
 	load_tree(file, model->forward);
 	load_tree(file, model->backward);
 	load_dictionary(file, model->dictionary);
@@ -1981,7 +1971,6 @@ static char *generate_reply(MODEL *model, DICTIONARY *words)
 	float max_surprise;
 	char *output;
 	static char *output_none=NULL;
-	int count;
 	int basetime;
 
 	/*
@@ -2007,12 +1996,10 @@ static char *generate_reply(MODEL *model, DICTIONARY *words)
 	 *		replies
 	 */
 	max_surprise=(float)-1.0;
-	count=0;
 	basetime=time(NULL);
 	do {
 		replywords=reply(model, keywords);
 		surprise=evaluate_reply(model, keywords, replywords);
-		++count;
 		if((surprise>max_surprise)&&(dissimilar(words, replywords)==TRUE)) {
 			max_surprise=surprise;
 			output=make_output(replywords);

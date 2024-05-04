@@ -54,6 +54,8 @@
 
 /*===========================================================================*/
 
+#include <stdint.h>
+
 #define P_THINK 40
 #define D_KEY 100000
 #define V_KEY 50000
@@ -68,10 +70,6 @@
 
 #define COMMAND_SIZE (sizeof(command)/sizeof(command[0]))
 
-#define BYTE1 unsigned char
-#define BYTE2 unsigned short
-#define BYTE4 unsigned long
-
 #define SEP "/"
 
 /*===========================================================================*/
@@ -81,32 +79,32 @@
 typedef enum { FALSE, TRUE } bool;
 
 typedef struct {
-	BYTE1 length;
+	uint8_t length;
 	char *word;
 } STRING;
 
 typedef struct {
-	BYTE4 size;
+	uint32_t size;
 	STRING *entry;
-	BYTE2 *index;
+	uint16_t *index;
 } DICTIONARY;
 
 typedef struct {
-	BYTE2 size;
+	uint16_t size;
 	STRING *from;
 	STRING *to;
 } SWAP;
 
 typedef struct NODE {
-	BYTE2 symbol;
-	BYTE4 usage;
-	BYTE2 count;
-	BYTE2 branch;
+	uint16_t symbol;
+	uint32_t usage;
+	uint16_t count;
+	uint16_t branch;
 	struct NODE **tree;
 } TREE;
 
 typedef struct {
-	BYTE1 order;
+	uint8_t order;
 	TREE *forward;
 	TREE *backward;
 	TREE **halcontext;
